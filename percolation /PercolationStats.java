@@ -2,15 +2,21 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.Stopwatch;
+import java.lang.Math;
 
 public class PercolationStats {
     // perform independent trials on an n-by-n grid
     private double[] results;
+    private double mean;
+    private double stddev;
+    private double confidenceLo;
+    private double confidenceHi;
+
     public PercolationStats(int n, int trials) {
+        if (n <=0 || trials <= 0) throw new IllegalArgumentException();
         Stopwatch sw = new Stopwatch();
         results = new double[trials];
         // Throw an IllegalArgumentException in the constructor if either n ≤ 0 or trials ≤ 0
-        if (n <=0 || trials <= 0) throw new IllegalArgumentException();
         int open_site;
         for (int i=0; i<trials; i++) {
             Percolation p = new Percolation(n);
@@ -24,27 +30,31 @@ public class PercolationStats {
             }
             results[i] =  p.numberOfOpenSites() / (n*n*1.0);
         }
-        System.out.println(sw.elapsedTime());
+        // System.out.println(sw.elapsedTime());
+        mean =  StdStats.mean(results);
+        stddev = StdStats.stddev(results);
+        confidenceLo =  mean - 1.96 * stddev / Math.sqrt(results.length);
+        confidenceHi = mean + 1.96 * stddev / Math.sqrt(results.length);
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        return StdStats.mean(results);
+        return mean;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        return StdStats.stddev(results);
+        return stddev;
     }
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return (mean() - 1.96 * stddev() / results.length);
+        return confidenceLo;
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return (mean() + 1.96 * stddev() / results.length);
+        return confidenceHi;
     }
 
     // test client (see below)

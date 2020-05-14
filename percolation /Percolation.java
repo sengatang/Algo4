@@ -5,7 +5,6 @@ public class Percolation {
     private int gridSize;
     private QuickUnion qu;
 
-
     public Percolation(int n) {
         if (n <= 0) throw new IllegalArgumentException("n less than or equals 0");
         grid = new int[n][n];
@@ -34,7 +33,8 @@ public class Percolation {
             }
             catch (IllegalArgumentException e) {continue;}
         }
-        if (row == gridSize) qu.union( gridSize*gridSize + 1, (row - 1)*gridSize + col);
+        if ((isFull(row, col)) && (row == gridSize)) qu.union( gridSize*gridSize + 1, (row - 1)*gridSize + col);
+        // System.out.println(isFull(row, col));
     }
 
     // is the site (row, col) open?
@@ -46,7 +46,8 @@ public class Percolation {
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         checkValid(row, col);
-        return (grid[row - 1][col - 1] == 1);
+        int p = (row - 1) * gridSize + col;
+        return (qu.root(p) == qu.root(0));
     }
 
     // returns the number of open sites
@@ -62,7 +63,10 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return qu.connected(0, gridSize*gridSize + 1);
+        for (int i=1; i <= gridSize; i ++) {
+            if (isFull(gridSize, i)) return true;
+        }
+        return false;
     }
 
     private void checkValid(int row, int col) {
@@ -104,7 +108,7 @@ class QuickUnion {
     // return the root of p
     public int root(int p) {
         while (id[p] != p) {
-            id[p] = id[id[p]];
+            id[p] = id[id[id[p]]];
             p = id[p];
         }
         return p;
