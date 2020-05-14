@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.Stopwatch;
 
 public class PercolationStats {
     // perform independent trials on an n-by-n grid
-    double[] results;
+    private double[] results;
     public PercolationStats(int n, int trials) {
         Stopwatch sw = new Stopwatch();
         results = new double[trials];

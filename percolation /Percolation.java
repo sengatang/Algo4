@@ -1,17 +1,15 @@
-import edu.princeton.cs.algs4.StdOut;
 public class Percolation {
     // creates n-by-n grid, with all sites initially blocked
     // -1 stands for block, 0 stands for open, 1 stands for full
-    int[][] grid;
-    int gridSize;
-    int openCount;
-    QuickUnion qu;
+    private int[][] grid;
+    private int gridSize;
+    private QuickUnion qu;
+
 
     public Percolation(int n) {
         if (n <= 0) throw new IllegalArgumentException("n less than or equals 0");
         grid = new int[n][n];
         gridSize = n;
-        openCount = 0;
         qu = new QuickUnion(n*n+2);
 
         for  (int i = 0; i < n; i++) {
@@ -67,7 +65,7 @@ public class Percolation {
         return qu.connected(0, gridSize*gridSize + 1);
     }
 
-    public void checkValid(int row, int col) {
+    private void checkValid(int row, int col) {
         if (!(row > 0 && row <= gridSize && col > 0 && col <= gridSize)) {
             throw new IllegalArgumentException("invalid row or col");
         }
